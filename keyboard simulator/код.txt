@@ -1,0 +1,21 @@
+if(i == 10) i=1;
+			 pictureBox1->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+			 if(i == 10) i=1;
+					pictureBox2->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox3->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox4->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox5->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox6->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox7->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox8->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+					pictureBox9->ImageLocation=Convert::ToString("C:\\Users\\Rustem\\Desktop\\"+(i++)+".png");
+					if(i == 10) i=1;
+                
+		 }

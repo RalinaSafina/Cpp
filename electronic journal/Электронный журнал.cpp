@@ -1,0 +1,317 @@
+#include<iostream>
+#include<cstdlib>
+#include<fstream>
+#include<cstring>
+#include<Windows.h>
+#include<string>
+using namespace std;
+
+class Subject;
+class Human
+{
+	public:
+		string id;
+		string familiya;
+		string imya;
+		string otchestvo;
+		Human() { }
+		Human(int idd, string f, string i, string o)	{ id = idd; familiya = f; imya = i; otchestvo = o; }
+		void Print()	{ cout << id << " " << familiya << " " << imya << " " << otchestvo << endl; }
+		void Add(Human &);
+};
+
+class Teacher : public Human
+{
+	public:
+		Teacher() : Human () { }
+		Teacher(int idd, string f, string i, string o) : Human(idd, f, i, o) { }
+		void Statistics(Subject , int);
+};
+class Pupil_mark
+{
+	public:
+		string idPupil;
+		string sdal;
+		string idteacher;
+		Pupil_mark()	{ }
+		Pupil_mark(string idd, string sd, string s)	{ idPupil = idd; sdal = sd; idteacher = s; }
+};
+class Subject
+{
+	public:
+		string id;
+		int j;
+		Teacher *idTeacher;
+		string name;
+		string mark;		// 0 - не сдавал/не пришел/ не сдал
+		Pupil_mark * pm; // 0 - не сдавал/не пришел/ не сдал
+		Subject() { pm = NULL; idTeacher = NULL; }
+		Subject(string idd, string nname)	{ id = idd; name = nname;}
+		bool operator == (Subject );
+		void Uspevaimost(int );
+		int ProcUspeha(int );
+};
+class Pupil : public Human
+{
+	public:
+		int y;
+		Pupil() : Human () { sub = NULL; }
+		Pupil(int idd, string f, string i, string o) : Human(idd, f, i, o) { }
+		Subject * sub;
+		void Uspev(int );
+};
+
+
+
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	ifstream fin1("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\студент.txt");
+	ifstream fin2("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\препод.txt");
+	ifstream fin3("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\предмет.txt");
+	ifstream fin4("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\общее.txt");
+	if(fin1 == 0 || fin2 == 0 || fin3 == 0 || fin4 == 0)
+		{
+			cout << "Files are not opened";
+			return 0;
+		}
+	Pupil pupil [1000];
+	Teacher teacher [150];
+	Subject subj [30];
+	int z = 0, x = 0, c = 0;
+	for(int i = 0; fin1.peek() != EOF; i ++)
+		{
+			string s, q, p, k;
+			fin1 >> s;
+			pupil[i].id = s;
+			fin1 >> q;
+			pupil[i].familiya = q;
+			fin1 >> p;
+			pupil[i].imya = p;
+			fin1 >> k;
+			pupil[i].otchestvo = k;
+			z ++;
+		}
+	for(int i = 0; fin2.peek() != EOF; i ++)
+		{
+			string s, q, p, k;
+			fin2 >> s;
+			teacher[i].id = s;
+			fin2 >> q;
+			teacher[i].familiya = q;
+			fin2 >> p;
+			teacher[i].imya = p;
+			fin2 >> k;
+			teacher[i].otchestvo = k;
+			x ++;
+		}
+//	for(int i = 0; i < x; i ++)
+//		{	teacher[i].Print(); cout << endl;	}
+	for(int i = 0; fin3.peek() != EOF; i ++)
+		{
+			string s, q;
+			fin3 >> s;
+			subj[i].id = s;
+			fin3 >> q;
+			subj[i].name = q;
+			c ++;
+	}
+	for(int i = 0; i < c; i ++)				//z-students, x-teachers, c-subjects
+		subj[i].pm = new Pupil_mark [z];
+	for(int i = 0; i < z; i ++)
+		{
+			pupil[i].sub = new Subject [c];
+			pupil[i].y = 0;
+	}
+	for(int i = 0; i < c; i ++)
+		{
+			subj[i].idTeacher = new Teacher [x];
+			subj[i].j = 0;
+	}
+	for(int i = 0; fin4.peek() != EOF; i ++)
+	{
+		string s, q, p, k;
+		fin4 >> s;
+		fin4 >> q;
+		fin4 >> p;
+		fin4 >> k;
+		for(int i = 0; i < c; i ++)
+			if(subj[i].id == s)
+				{
+
+//					subj[i].idTeacher[subj[i].j].id = q;
+					subj[i].pm[subj[i].j].idteacher = q;
+					subj[i].pm[subj[i].j].idPupil = p;
+					subj[i].pm[subj[i].j].sdal = k;
+					for(int l = 0; l < z; l ++)
+						if(pupil[l].id == p)
+							{
+								pupil[l].sub[pupil[l].y].id = s;
+								pupil[l].sub[pupil[l].y].name = subj[i].name;
+								pupil[l].sub[pupil[l].y].mark = k;
+								pupil[l].y ++;
+								break;
+						}
+					subj[i].j ++;
+					break;
+			}
+	}
+	int w = 0;
+	while (w != 8){
+	cout << "1 - Добавить студента" << endl;
+	cout << "2 - Добавить преподавателя" << endl;
+	cout << "3 - Добавить предмет" << endl;
+	cout << "4 - Узнать информацию про студента" << endl;
+	cout << "5 - Узнать информацию про преподавателя" << endl;
+	cout << "6 - Узнать информацию о предмете" << endl;
+	cout << "7 - Добавить оценку" << endl;
+	cout << "8 - Выйти из журнала" << endl;
+	
+	cin >> w;
+
+	system("CLS");
+	ofstream fin10("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\студент.txt", ios :: app);
+	ofstream fin20("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\препод.txt", ios :: app);
+	ofstream fin30("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\предмет.txt", ios :: app);
+	ofstream fin40("C:\\Users\\Rustem\\Desktop\\Учебная практика\\Электронный журнал\\общее.txt", ios :: app);
+	if(w == 1)
+		{
+			pupil[z].Add(pupil[z]);
+			fin10 <<"\n" << pupil[z].id << " " << pupil[z].familiya << " " << pupil[z].imya << " " << pupil[z].otchestvo;
+	}
+	if(w == 2)
+		{
+			teacher[x].Add(teacher[x]);
+			fin20 <<"\n" << teacher[x].id << " " << teacher[x].familiya << " " << teacher[x].imya << " " << teacher[x].otchestvo;
+	}
+	if(w == 3)
+		{
+			cout << "Введите id предмета: " << endl;
+			cin >> subj[c].id;
+			cout << "Введите название предмета: " << endl;
+			cin >> subj[c].name;
+			fin30 << "\n" << subj[c].id << " " << subj[c].name;
+	}
+	if(w == 7)
+	{
+		string r;
+		cout << "id предмета ";
+		cin >> r;	fin40 << "\n" << r << " ";
+		cout << "id преподавателя ";
+		cin >> r;	fin40 << r << " ";
+		cout << "id студента ";
+		cin >> r;	fin40 << r << " ";
+		cout << "оценка (от 0 до 5) ";
+		cin >> r;	fin40 << r;
+	}
+	if(w == 4)
+	{
+		string s, q, p;
+		cout << "Введите ФИО студента" << endl;
+		cin >> s >> q >> p;
+		for(int i = 0; i < z; i ++)
+			if(pupil[i].familiya == s && pupil[i].imya == q && pupil[i].otchestvo == p)
+				pupil[i].Uspev(c);
+	}
+	if(w == 5)
+	{
+		string s, q, p, a;
+		cout << "Введите ФИО преподавателя и название предмета" << endl;
+		cin >> s >> q >> p >> a;
+		int o = 0;
+		for( ; o < c; o ++)
+			if(subj[o].name == a)
+				break;
+		for(int i = 0; i < x; i ++)
+			if(teacher[i].familiya == s && teacher[i].imya == q && teacher[i].otchestvo == p)
+				teacher[i].Statistics(subj[o], z);
+	}
+	if(w == 6)
+	{
+		string s;
+		cout << "Введите название предмета" << endl;
+		cin >> s;
+		for(int i = 0; i < c; i ++)
+			if(subj[i].name == s)
+				{
+					cout << "Процент успеха = " << subj[i].ProcUspeha(z) << "%" << endl;
+					subj[i].Uspevaimost(z);
+			}
+	}
+	}
+	const char *t = "8 - Выйти из журнала";
+	char *t1 = const_cast<char*>(t);	//кастование
+	Pupil * hm;
+	Pupil * pl = dynamic_cast<Pupil *>(hm);
+	system("PAUSE");
+	return 0;
+}
+
+void Subject :: Uspevaimost(int z)	// выводит на экран тех, кто сдал и их оценки
+{
+	for(int i = 0; i < z; i ++)
+		if(pm[i].sdal != "0")
+				cout << pm[i].idPupil << " " << pm[i].sdal << endl;
+}
+int Subject :: ProcUspeha(int z)		// считает процент сдавших данный предмет
+{
+	int k = 0;
+	for(int i = 0; i < z; i ++)
+		if(pm[i].sdal != "0" && pm[i].sdal != "1" && pm[i].sdal != "2")
+			k ++;
+	k = k * 100 / z;
+	return k;
+}
+void Pupil :: Uspev(int c)
+{
+	for(int i = 0; i < c; i ++)
+		if(sub[i].mark != "0")
+			cout << sub[i].name << " " << sub[i].mark << endl;
+		else
+			cout << sub[i].name << " не сдал(ла)/ не сдавал(а)" << endl;
+}
+void Teacher :: Statistics(Subject a, int z)
+{
+	bool x = true;
+	for(int i = 0; i < 10; i ++)
+	{
+//		if(id == a.idTeacher[i].id)
+			for(int j = 0; j < z; j ++)
+				if(a.pm[j].idteacher == id){
+					if(a.pm[j].sdal != "0")
+						cout << a.pm[j].idPupil << " " << a.pm[j].sdal << endl; 
+					else
+						cout << a.pm[j].idPupil << " не сдал(ла)/ не сдавал(а)" << endl;
+					x = false; 
+				}
+		break;
+	}
+	if(x)
+		cout << "Преподаватель не ведет данный предмет.";
+}
+bool Subject :: operator == (Subject a)
+{
+	if(id == a.id && name == a.name)
+		return true;
+	else
+		return false;
+}
+void Human :: Add(Human & a)
+{
+	string s, p, q, idd;
+	cout << "Введите 4хзначный id ";
+	cin >> idd;
+	cout << "Введите фамилию ";
+	cin >> s; 
+	cout << "Введите имя ";
+	cin >> p;
+	cout << "Введите отчество ";
+	cin >> q;
+	a.id = idd;
+	a.familiya = s;
+	a.imya = p;
+	a.otchestvo = q;
+}
+
+
